@@ -21,6 +21,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "FreeRTOS.h"
+#include "Task.h"
 #include <stdio.h>
 /* USER CODE END Includes */
 
@@ -86,8 +88,34 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-  printf("Hello World\n");
+  void Task1_Handler(void* pParams)
+  {
+  	while(1)
+  	{
+  		printf("%s\n", (char*)pParams);
+
+  	}
+  }
+
+  void Task2_Handler(void* pParams)
+  {
+  	while(1)
+  	{
+  		printf("%s\n", (char*)pParams);
+
+  	}
+  }
   /* USER CODE END 2 */
+
+  TaskHandle_t task1_handle, task2_handle;
+  BaseType_t ret = xTaskCreate(Task1_Handler, "Task1", 200, "Hello World from Task1", configMAX_PRIORITIES-1, &task1_handle);
+  configASSERT(ret == pdPASS);
+
+  ret = xTaskCreate(Task2_Handler, "Task2", 200, "Hello World from Task2", configMAX_PRIORITIES - 1, &task2_handle);
+  configASSERT(ret == pdPASS);
+
+  // start the freeRTOS scheduler
+   vTaskStartScheduler();
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
