@@ -51,11 +51,29 @@
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 /* USER CODE BEGIN PFP */
-
+static void Task1_Handler(void* pParams);
+static void Task2_Handler(void* pParams);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+  void Task1_Handler(void* pParams)
+  {
+  	while(1)
+  	{
+  		printf("%s\n", (char*)pParams);
+
+  	}
+  }
+
+  void Task2_Handler(void* pParams)
+  {
+  	while(1)
+  	{
+  		printf("%s\n", (char*)pParams);
+
+  	}
+  }
 
 /* USER CODE END 0 */
 
@@ -88,25 +106,6 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-  void Task1_Handler(void* pParams)
-  {
-  	while(1)
-  	{
-  		printf("%s\n", (char*)pParams);
-
-  	}
-  }
-
-  void Task2_Handler(void* pParams)
-  {
-  	while(1)
-  	{
-  		printf("%s\n", (char*)pParams);
-
-  	}
-  }
-  /* USER CODE END 2 */
-
   TaskHandle_t task1_handle, task2_handle;
   BaseType_t ret = xTaskCreate(Task1_Handler, "Task1", 200, "Hello World from Task1", configMAX_PRIORITIES-1, &task1_handle);
   configASSERT(ret == pdPASS);
@@ -116,6 +115,8 @@ int main(void)
 
   // start the freeRTOS scheduler
    vTaskStartScheduler();
+
+  /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
@@ -319,6 +320,27 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 
 /* USER CODE END 4 */
+
+/**
+  * @brief  Period elapsed callback in non blocking mode
+  * @note   This function is called  when TIM6 interrupt took place, inside
+  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
+  * a global variable "uwTick" used as application time base.
+  * @param  htim : TIM handle
+  * @retval None
+  */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  /* USER CODE BEGIN Callback 0 */
+
+  /* USER CODE END Callback 0 */
+  if (htim->Instance == TIM6) {
+    HAL_IncTick();
+  }
+  /* USER CODE BEGIN Callback 1 */
+
+  /* USER CODE END Callback 1 */
+}
 
 /**
   * @brief  This function is executed in case of error occurrence.
