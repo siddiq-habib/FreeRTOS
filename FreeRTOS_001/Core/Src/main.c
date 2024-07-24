@@ -38,7 +38,7 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-
+#define DWT_CTRL (*(volatile uint32_t*)0xE0001000)
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -106,6 +106,9 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
+  DWT_CTRL |= (1 << 0);
+  SEGGER_SYSVIEW_Conf();
+  SEGGER_SYSVIEW_Start();
   TaskHandle_t task1_handle, task2_handle;
   BaseType_t ret = xTaskCreate(Task1_Handler, "Task1", 200, "Hello World from Task1", configMAX_PRIORITIES-1, &task1_handle);
   configASSERT(ret == pdPASS);
